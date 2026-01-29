@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Reddit – Auto‑Disable Subreddit Style",
+  "description": "Automatically turns off the ‘Use subreddit style’ option on old.reddit.com (RES required).",
+  "version": "1.2",
+  "permissions": ["scripting"],
+  "host_permissions": ["*://old.reddit.com/*"],
+
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://old.reddit.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
