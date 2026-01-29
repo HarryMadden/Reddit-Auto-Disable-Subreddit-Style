@@ -28,7 +28,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      /* overflow: hidden;  ← remove this to stop clipping */
+      /* overflow: hidden;  ← keep it hidden only if you want clipping */
     }
 
     .card {
@@ -39,7 +39,6 @@
       width: 90%;
       padding: 2rem;
       text-align: center;
-      transition: transform 0.05s ease-out;   /* smoother motion */
     }
 
     h1 { font-size: 1.8rem; font-weight: 600; margin: 0 0 .5rem; }
@@ -54,40 +53,73 @@
 
 <body>
   <div class="card" id="card">
-    <h1>Auto-Disable Subreddit Styles</h1>
-    <p>Releasing as a Chrome extension soon</p>
+    <h1>Auto‑Disable Subreddit Styles</h1>
+    <p>Releasing as a Chrome extension soon™</p>
+    <p>Requires RES</p>
+    <p>Requires ORR</p>
     <p><a href="https://github.com/HarryMadden" target="_blank" rel="noopener">github.com/HarryMadden</a></p>
   </div>
 
   <script>
+    /* -------------------------------------------------------------
+     * 1️⃣  Variables
+     * ------------------------------------------------------------ */
     const card = document.getElementById('card');
-    const maxTranslate = 12;          // max pixels to translate in any direction
-    let requestId;
+    const maxTranslate = 12;          // max pixels the card may move
+    const smoothingPoints = 5;        // how many recent cursor points to average
+    const damping = 0.15;             // higher = faster, lower = smoother
 
+    let mouseHistory = [];            // stores recent normalized offsets
+    let targetX = 0, targetY = 0;     // smoothed target position
+    let currentX = 0, currentY = 0;   // actual animated position
+
+    /* -------------------------------------------------------------
+     * 2️⃣  Mouse tracking – update smoothed target
+     * ------------------------------------------------------------ */
     card.addEventListener('mousemove', e => {
-      if (requestId) cancelAnimationFrame(requestId);
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top  + rect.height / 2;
 
-      requestId = requestAnimationFrame(() => {
-        const rect = card.getBoundingClientRect();
-        const cardCenterX = rect.left + rect.width / 2;
-        const cardCenterY = rect.top  + rect.height / 2;
+      // Cursor offset from card centre, normalised to [-1, 1]
+      const offsetX = (e.clientX - cx) / (rect.width / 2);
+      const offsetY = (e.clientY - cy) / (rect.height / 2);
 
-        const offsetX = e.clientX - cardCenterX;
-        const offsetY = e.clientY - cardCenterY;
+      // Add to history
+      mouseHistory.push({ ox: offsetX, oy: offsetY });
+      if (mouseHistory.length > smoothingPoints) mouseHistory.shift();
 
-        const normX = offsetX / (rect.width / 2);
-        const normY = offsetY / (rect.height / 2);
+      // Compute average of the history
+      const avg = mouseHistory.reduce(
+        (acc, p) => ({ ox: acc.ox + p.ox, oy: acc.oy + p.oy }),
+        { ox: 0, oy: 0 }
+      );
+      const avgOx = avg.ox / mouseHistory.length;
+      const avgOy = avg.oy / mouseHistory.length;
 
-        const translateX = Math.max(-maxTranslate, Math.min(maxTranslate, normX * maxTranslate));
-        const translateY = Math.max(-maxTranslate, Math.min(maxTranslate, normY * maxTranslate));
-
-        card.style.transform = `translate(${translateX}px, ${translateY}px)`;
-      });
+      // Convert to pixel translate, clamped to ±maxTranslate
+      targetX = Math.max(-maxTranslate, Math.min(maxTranslate, avgOx * maxTranslate));
+      targetY = Math.max(-maxTranslate, Math.min(maxTranslate, avgOy * maxTranslate));
     });
 
+    /* -------------------------------------------------------------
+     * 3️⃣  Reset target when mouse leaves the card
+     * ------------------------------------------------------------ */
     card.addEventListener('mouseleave', () => {
-      card.style.transform = 'translate(0, 0)';
+      targetX = targetY = 0;
     });
+
+    /* -------------------------------------------------------------
+     * 4️⃣  Animation loop – smooth spring‑like motion
+     * ------------------------------------------------------------ */
+    function animate() {
+      currentX += (targetX - currentX) * damping;
+      currentY += (targetY - currentY) * damping;
+
+      card.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);   // start animation
   </script>
 </body>
 </html>
