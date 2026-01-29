@@ -4,32 +4,31 @@
   <meta charset="utf-8">
   <title>Reddit‑Auto‑Disable‑Subreddit‑Style</title>
 
-  <!-- Google site‑verification meta – keep it where it is -->
+  <!-- Google site‑verification meta -->
   <meta name="google-site-verification"
         content="4mrhC95v9YsAor3epC1umxHBlUko4Hp7MOUYgO-1UbQ">
 
-  <!-- Optional web‑safe font -->
+  <!-- Optional font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
 
   <style>
-    /* ------------------------  Background gradient  ------------------------ */
+    /* ----------  Background gradient: dark blue → lighter blue ---------- */
     html, body {
       height: 100%;
       margin: 0;
       font-family: 'Inter', sans-serif;
-      /* 4‑color gradient: a gentle “morning” vibe */
+      /* dark navy to a gentle sky‑blue */
       background: linear-gradient(135deg,
-                                  #ff9a9e 0%,
-                                  #fad0c4 35%,
-                                  #fad0c4 65%,
-                                  #ff9a9e 100%);
-      /* Optional subtle parallax‑like effect */
-      background-attachment: fixed;
+                                  #001f3f 0%,   /* dark blue (almost navy) */
+                                  #001f3f 45%,  /* keep the dark shade longer */
+                                  #0074D9 55%,  /* light blue‑sky */
+                                  #7FDBFF 100%);/* even lighter blue */
+      background-attachment: fixed;   /* subtle parallax */
       color: #222;
     }
 
-    /* ------------------------  Centered card  --------------------------- */
+    /* ----------  Centered card ---------- */
     .card {
       background: #fff;
       border-radius: 12px;
@@ -43,7 +42,6 @@
     h1 { font-size: 1.8rem; font-weight: 600; margin: 0 0 .5rem; }
     p  { margin: 0; line-height: 1.6; }
 
-    /* ------------------------  Responsiveness  -------------------------- */
     @media (max-width: 480px) {
       .card { width: 90%; padding: 1.5rem; }
       h1   { font-size: 1.5rem; }
@@ -53,8 +51,8 @@
 
 <body>
   <div class="card">
-    <h1>Automatically disable subreddit styles</h1>
-    <p>Requires RES</p>
+    <h1>Reddit‑Auto‑Disable‑Subreddit‑Style</h1>
+    <p>TEST</p>
   </div>
 </body>
 </html>
