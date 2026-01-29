@@ -67,7 +67,7 @@
     const card = document.getElementById('card');
     const maxTranslate = 12;          // max pixels the card may move
     const smoothingPoints = 5;        // how many recent cursor points to average
-    const damping = 0.15;             // higher = faster, lower = smoother
+    const damping = 0.10;             // higher = faster, lower = smoother
 
     let mouseHistory = [];            // stores recent normalized offsets
     let targetX = 0, targetY = 0;     // smoothed target position
