@@ -18,32 +18,42 @@
       height: 100%;
       margin: 0;
       font-family: 'Inter', sans-serif;
-      /* dark navy to a gentle sky‑blue */
       background: linear-gradient(135deg,
-                                  #001f3f 0%,   /* dark blue (almost navy) */
-                                  #001f3f 45%,  /* keep the dark shade longer */
-                                  #0074D9 55%,  /* light blue‑sky */
-                                  #7FDBFF 100%);/* even lighter blue */
+                                  #001f3f 0%,   /* dark navy */
+                                  #001f3f 45%,
+                                  #0074D9 55%,
+                                  #7FDBFF 100%);
       background-attachment: fixed;   /* subtle parallax */
       color: #222;
+      display: flex;
+      justify-content: center;        /* horizontal center of card */
+      align-items: center;            /* vertical center of card */
     }
 
-    /* ----------  Centered card ---------- */
+    /* ----------  Centered card (now semi‑transparent) ---------- */
     .card {
-      background: #fff;
+      background: rgba(255,255,255,0.92);  /* 92 % opacity */
       border-radius: 12px;
       box-shadow: 0 8px 20px rgba(0,0,0,.12);
       max-width: 480px;
-      margin: 1rem auto;
+      width: 90%;                     /* keep responsiveness */
       padding: 2rem;
-      text-align: left;
+      text-align: center;             /* center all text inside */
     }
 
-    h1 { font-size: 1.8rem; font-weight: 600; margin: 0 0 .5rem; }
-    p  { margin: 0; line-height: 1.6; }
+    h1 { 
+      font-size: 1.8rem; 
+      font-weight: 600; 
+      margin: 0 0 .5rem; 
+    }
+
+    p { 
+      margin: 0; 
+      line-height: 1.6; 
+    }
 
     @media (max-width: 480px) {
-      .card { width: 90%; padding: 1.5rem; }
+      .card { padding: 1.5rem; }
       h1   { font-size: 1.5rem; }
     }
   </style>
@@ -52,6 +62,10 @@
 <body>
   <div class="card">
     <h1>Auto-Disable Subreddit Styles</h1>
+   
+    <p>Releasing as a Chrome extension soon</p>
+    <p>github.com/HarryMadden</p>
+    <!-- you can add <p>…</p> below if you want a description -->
   </div>
 </body>
 </html>
