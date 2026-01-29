@@ -28,9 +28,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      /* overflow: hidden;  ← remove this to stop clipping */
     }
 
-    /* ----------  Centered card (semi‑transparent) ---------- */
     .card {
       background: rgba(255,255,255,0.92);
       border-radius: 12px;
@@ -39,12 +39,7 @@
       width: 90%;
       padding: 2rem;
       text-align: center;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 12px 28px rgba(0,0,0,.18);
+      transition: transform 0.05s ease-out;   /* smoother motion */
     }
 
     h1 { font-size: 1.8rem; font-weight: 600; margin: 0 0 .5rem; }
@@ -58,10 +53,41 @@
 </head>
 
 <body>
-  <div class="card">
+  <div class="card" id="card">
     <h1>Auto-Disable Subreddit Styles</h1>
     <p>Releasing as a Chrome extension soon</p>
     <p><a href="https://github.com/HarryMadden" target="_blank" rel="noopener">github.com/HarryMadden</a></p>
   </div>
+
+  <script>
+    const card = document.getElementById('card');
+    const maxTranslate = 12;          // max pixels to translate in any direction
+    let requestId;
+
+    card.addEventListener('mousemove', e => {
+      if (requestId) cancelAnimationFrame(requestId);
+
+      requestId = requestAnimationFrame(() => {
+        const rect = card.getBoundingClientRect();
+        const cardCenterX = rect.left + rect.width / 2;
+        const cardCenterY = rect.top  + rect.height / 2;
+
+        const offsetX = e.clientX - cardCenterX;
+        const offsetY = e.clientY - cardCenterY;
+
+        const normX = offsetX / (rect.width / 2);
+        const normY = offsetY / (rect.height / 2);
+
+        const translateX = Math.max(-maxTranslate, Math.min(maxTranslate, normX * maxTranslate));
+        const translateY = Math.max(-maxTranslate, Math.min(maxTranslate, normY * maxTranslate));
+
+        card.style.transform = `translate(${translateX}px, ${translateY}px)`;
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'translate(0, 0)';
+    });
+  </script>
 </body>
 </html>
