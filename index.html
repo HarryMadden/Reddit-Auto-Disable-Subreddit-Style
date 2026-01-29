@@ -19,38 +19,36 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg,
-                                  #001f3f 0%,   /* dark navy */
+                                  #001f3f 0%,
                                   #001f3f 45%,
                                   #0074D9 55%,
                                   #7FDBFF 100%);
-      background-attachment: fixed;   /* subtle parallax */
+      background-attachment: fixed;
       color: #222;
       display: flex;
-      justify-content: center;        /* horizontal center of card */
-      align-items: center;            /* vertical center of card */
+      justify-content: center;
+      align-items: center;
     }
 
-    /* ----------  Centered card (now semi‑transparent) ---------- */
+    /* ----------  Centered card (semi‑transparent) ---------- */
     .card {
-      background: rgba(255,255,255,0.92);  /* 92 % opacity */
+      background: rgba(255,255,255,0.92);
       border-radius: 12px;
       box-shadow: 0 8px 20px rgba(0,0,0,.12);
       max-width: 480px;
-      width: 90%;                     /* keep responsiveness */
+      width: 90%;
       padding: 2rem;
-      text-align: center;             /* center all text inside */
+      text-align: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
-    h1 { 
-      font-size: 1.8rem; 
-      font-weight: 600; 
-      margin: 0 0 .5rem; 
+    .card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 12px 28px rgba(0,0,0,.18);
     }
 
-    p { 
-      margin: 0; 
-      line-height: 1.6; 
-    }
+    h1 { font-size: 1.8rem; font-weight: 600; margin: 0 0 .5rem; }
+    p  { margin: 0; line-height: 1.6; }
 
     @media (max-width: 480px) {
       .card { padding: 1.5rem; }
@@ -62,10 +60,8 @@
 <body>
   <div class="card">
     <h1>Auto-Disable Subreddit Styles</h1>
-   
     <p>Releasing as a Chrome extension soon</p>
-    <p>github.com/HarryMadden</p>
-    <!-- you can add <p>…</p> below if you want a description -->
+    <p><a href="https://github.com/HarryMadden" target="_blank" rel="noopener">github.com/HarryMadden</a></p>
   </div>
 </body>
 </html>
