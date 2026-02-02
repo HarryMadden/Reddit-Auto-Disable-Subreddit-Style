@@ -1,56 +1,74 @@
-/**
- * 1️⃣  Find the “Use subreddit style” link inside the RES “View” dropdown.
- * 2️⃣  If it’s not already selected, click it.
- *
- * The script runs a small polling loop (once every 2 s) and also
- * watches the DOM for changes – good for pages that load content
- * dynamically or for users who click the “View” button after load.
- */
+/* ─────────────────────────────────────────────────────────────────────
+ *  Works with <input id="res-style-checkbox" …>
+ *  Stops watching after it has un‑checked the box.
+ * ───────────────────────────────────────────────────────────────────── */
 
 (() => {
-  const CHECK_INTERVAL_MS = 2000; // 2 seconds
+  const POLL_INTERVAL_MS = 2000; 
 
-  // Utility: trim & normalize text
-  const normalize = str => str.trim().replace(/\s+/g, ' ');
+  /* ----------------------------------------------------------------
+   *   Find the checkbox
+   * ---------------------------------------------------------------- */
 
-  // 1️⃣  Locate the toggle button
-  const findToggle = () => {
-    // RES injects a <a> inside the View dropdown whose visible text
-    // is exactly “Use subreddit style”.  We look for that text.
-    const links = Array.from(document.querySelectorAll('a'));
-    return links.find(el => normalize(el.textContent) === 'Use subreddit style');
-  };
+  const findCheckbox = () =>
+    document.querySelector('#res-style-checkbox') ||
+    document.querySelector('input[name="res-style-checkbox"]');
 
-  // 2️⃣  Click the toggle if it isn’t active
-  const clickToggleIfNeeded = () => {
-    const toggle = findToggle();
-    if (!toggle) return; // not yet rendered
+  /* ----------------------------------------------------------------
+   *   Uncheck once, then stop everything
+   * ---------------------------------------------------------------- */
+  const uncheckOnce = () => {
+    const cb = findCheckbox();
 
-    // In the RES menu, the active item gets a class “selected” (or
-    // sometimes “is-active”).  If it’s already selected, do nothing.
-    const isActive = toggle.classList.contains('selected') ||
-                     toggle.classList.contains('is-active');
-    if (isActive) return;
-
-    // The View dropdown might be closed; if the <a> is hidden,
-    // we need to open the dropdown first.
-    if (!toggle.parentElement.closest('.view-dropdown').classList.contains('open')) {
-      // Find the “View” button (usually has a class “view-dropdown”)
-      const viewBtn = document.querySelector('.view-dropdown');
-      if (viewBtn) viewBtn.click(); // open the menu
+    if (!cb) {
+      console.log('[Auto‑Disable Subreddit Styles] ❌ Checkbox not present yet');
+      return false;   
     }
 
-    // Small delay to let the menu animate
-    setTimeout(() => toggle.click(), 150);
+    if (!cb.checked) {
+      console.log('[Auto‑Disable Subreddit Styles] ✔️ Already unchecked – nothing to do');
+      return true;  
+    }
+
+    console.log('[Auto‑Disable Subreddit Styles] ⚙️ Found checkbox – unchecking');
+
+    // Open the View‑dropdown if the checkbox is hidden
+    const viewBtn = document.querySelector('.view-dropdown');
+    if (viewBtn && !viewBtn.classList.contains('open')) {
+      viewBtn.click();
+      console.log('[Auto‑Disable Subreddit Styles] ➡️ View‑dropdown opened');
+    }
+
+    setTimeout(() => {
+      cb.click();   // toggles to unchecked
+      console.log('[Auto‑Disable Subreddit Styles] ⏱️ Clicked – state now:', cb.checked);
+    }, 150);
+
+    return true;      // finished – no need to keep polling
   };
 
-  // Run immediately once the page is idle
-  clickToggleIfNeeded();
+  /* ----------------------------------------------------------------
+   *   Run immediately; keep trying until we succeed
+   * ---------------------------------------------------------------- */
 
-  // 3️⃣  Keep trying: DOM may change after dynamic loads
-  const observer = new MutationObserver(() => clickToggleIfNeeded());
-  observer.observe(document.body, { childList: true, subtree: true });
+  let finished = false;
+  const maxRetries = 5;   
+  let attempts = 0;
 
-  // 4️⃣  As a safety net, also poll every CHECK_INTERVAL_MS
-  setInterval(clickToggleIfNeeded, CHECK_INTERVAL_MS);
+  const tryOnce = () => {
+    if (finished) return;            // already done
+    const done = uncheckOnce();
+    attempts++;
+    if (done || attempts >= maxRetries) {
+      finished = true;               // stop all watching
+      console.log('[Auto‑Disable Subreddit Styles] ✅ Done (or max retries reached)');
+    }
+  };
+
+  tryOnce();           // first attempt
+  const intervalId = setInterval(() => {
+    if (!finished) tryOnce();
+    else clearInterval(intervalId); 
+  }, POLL_INTERVAL_MS);
+
 })();
