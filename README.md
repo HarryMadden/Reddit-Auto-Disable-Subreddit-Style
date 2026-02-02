@@ -4,8 +4,8 @@
 </p>
 
 
-Chrome Extension Repo for Automatically Disabling Subreddit Styles - RES does not have this functionality without logging in.
+Chrome Extension for Automatically Disabling Subreddit Styles - RES does not have this functionality without logging in.
 
-Requires Reddit Enhancement Suite: (https://redditenhancementsuite.com/).
+Requires <a href="https://redditenhancementsuite.com/">Reddit Enhancement Suite.</a>.
 
-Requires Old Reddit Redirect: (https://chromewebstore.google.com/detail/old-reddit-redirect/dneaehbmnbhcippjikoajpoabadpodje)
+Requires <a href="https://chromewebstore.google.com/detail/old-reddit-redirect/dneaehbmnbhcippjikoajpoabadpodje">Old Reddit Redirect</a>.
