@@ -13,24 +13,38 @@
         rel="stylesheet">
 
   <style>
-    /* ----------  Background gradient: dark blue → lighter blue ---------- */
+    /* -------------------------------------------------------------
+       1️⃣  Global styles + smooth gradient background
+       ------------------------------------------------------------- */
+    :root {
+      /* Palette – tweak if you like */
+      --color-dark          : #001f3f;
+      --color-mid           : #00416e;
+      --color-light         : #0074D9;
+      --color-very-light    : #7FDBFF;
+    }
+
     html, body {
       height: 100%;
       margin: 0;
       font-family: 'Inter', sans-serif;
+      /* 4‑stop gradient – feels silky */
       background: linear-gradient(135deg,
-                                  #001f3f 0%,
-                                  #001f3f 45%,
-                                  #0074D9 55%,
-                                  #7FDBFF 100%);
+        var(--color-dark)   0%,
+        var(--color-mid)   30%,
+        var(--color-light) 60%,
+        var(--color-very-light) 100%);
       background-attachment: fixed;
       color: #222;
       display: flex;
       justify-content: center;
       align-items: center;
-      /* overflow: hidden;  ← keep it hidden only if you want clipping */
+      /* removed overflow: hidden → no clipping */
     }
 
+    /* -------------------------------------------------------------
+       2️⃣  Card container
+       ------------------------------------------------------------- */
     .card {
       background: rgba(255,255,255,0.92);
       border-radius: 12px;
@@ -39,87 +53,117 @@
       width: 90%;
       padding: 2rem;
       text-align: center;
+      transition: transform 0.15s; /* fallback when JS disabled */
+      /* allow the card (and its shadow) to render outside the body */
+      overflow: visible;
     }
 
-    h1 { font-size: 1.8rem; font-weight: 600; margin: 0 0 .5rem; }
-    p  { margin: 0; line-height: 1.6; }
+    h1 { font-size: 1.8rem; font-weight: 600; margin: .5rem 0; }
+    p  { margin: .4rem 0; line-height: 1.6; }
 
     @media (max-width: 480px) {
       .card { padding: 1.5rem; }
       h1   { font-size: 1.5rem; }
     }
+
+    /* -------------------------------------------------------------
+       3️⃣  Links – same styling as Reddit
+       ------------------------------------------------------------- */
+    a {
+      color: #0074D9;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 
 <body>
   <div class="card" id="card">
     <h1>Auto‑Disable Subreddit Styles</h1>
-    <p>Download <a href="https://chromewebstore.google.com/detail/auto%E2%80%91disable-subreddit-st/enadhkapnbdmhchjfnfnmipneopmnjha?utm_source=item-share-cb">Here</a>.</p>
-    <p>Requires <a href="https://redditenhancementsuite.com/">Reddit Enhancement Suite</a>.</p>
-    <p>Requires <a href="https://chromewebstore.google.com/detail/old-reddit-redirect/dneaehbmnbhcippjikoajpoabadpodje">Old Reddit Redirect</a>.</p>
-    <p>Repo: <a href="https://github.com/HarryMadden/Reddit-Auto-Disable-Subreddit-Style/tree/main">github.com/RADSS</a>.</p>
+    <p>
+      Download
+      <a href="https://chromewebstore.google.com/detail/auto%E2%80%91disable-subreddit-st/enadhkapnbdmhchjfnfnmipneopmnjha?utm_source=item-share-cb">
+        Here.
+      </a>
+    </p>
+	
+    <p>
+      Requires
+      <a href="https://redditenhancementsuite.com/">Reddit Enhancement Suite</a>
+    </p>
+    <p>
+      Requires
+      <a href="https://chromewebstore.google.com/detail/old-reddit-redirect/dneaehbmnbhcippjikoajpoabadpodje">
+        Old Reddit Redirect
+      </a>
+    </p>
+	
+    <p>
+      Repo:
+      <a href="https://github.com/HarryMadden/Reddit-Auto-Disable-Subreddit-Style/tree/main">
+        github.com/RADSS
+      </a>
+    </p>
   </div>
 
+  <!-- -------------------------------------------------------------
+       4️⃣  Parallax/tilt script – kept minimal
+       ------------------------------------------------------------- -->
   <script>
-    /* -------------------------------------------------------------
-     * 1️⃣  Variables
-     * ------------------------------------------------------------ */
+    /*----- 1️⃣ Config -----*/
     const card = document.getElementById('card');
-    const maxTranslate = 100;          // max pixels the card may move
-    const smoothingPoints = 4;        // how many recent cursor points to average
-    const damping = 0.03;             // higher = faster, lower = smoother
+    const maxTranslate = 50;     // max px the card may move
+    const smoothingPoints = 4;   // how many recent points to average
+    const damping = 0.04;        // higher = faster, lower = smoother
 
-    let mouseHistory = [];            // stores recent normalized offsets
-    let targetX = 0, targetY = 0;     // smoothed target position
-    let currentX = 0, currentY = 0;   // actual animated position
+    /*----- 2️⃣ State -----*/
+    let mouseHistory = [];       // recent cursor offsets (normalised)
+    let targetX = 0, targetY = 0; // smoothed target
+    let currentX = 0, currentY = 0; // actual position
 
-    /* -------------------------------------------------------------
-     * 2️⃣  Mouse tracking – update smoothed target
-     * ------------------------------------------------------------ */
+    /*----- 3️⃣ Mouse handler -----*/
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
-      const cy = rect.top  + rect.height / 2;
+      const cy = rect.top + rect.height / 2;
 
-      // Cursor offset from card centre, normalised to [-1, 1]
-      const offsetX = (e.clientX - cx) / (rect.width / 2);
-      const offsetY = (e.clientY - cy) / (rect.height / 2);
+      // Normalised offset from card centre, range [-1, 1]
+      const ox = (e.clientX - cx) / (rect.width / 2);
+      const oy = (e.clientY - cy) / (rect.height / 2);
 
       // Add to history
-      mouseHistory.push({ ox: offsetX, oy: offsetY });
+      mouseHistory.push({ ox, oy });
       if (mouseHistory.length > smoothingPoints) mouseHistory.shift();
 
-      // Compute average of the history
-      const avg = mouseHistory.reduce(
-        (acc, p) => ({ ox: acc.ox + p.ox, oy: acc.oy + p.oy }),
-        { ox: 0, oy: 0 }
-      );
+      // Average of the history
+      const avg = mouseHistory.reduce((a, p) => ({
+        ox: a.ox + p.ox,
+        oy: a.oy + p.oy
+      }), { ox: 0, oy: 0 });
+
       const avgOx = avg.ox / mouseHistory.length;
       const avgOy = avg.oy / mouseHistory.length;
 
-      // Convert to pixel translate, clamped to ±maxTranslate
+      // Convert to pixel translate, clamp
       targetX = Math.max(-maxTranslate, Math.min(maxTranslate, avgOx * maxTranslate));
       targetY = Math.max(-maxTranslate, Math.min(maxTranslate, avgOy * maxTranslate));
     });
 
-    /* -------------------------------------------------------------
-     * 3️⃣  Reset target when mouse leaves the card
-     * ------------------------------------------------------------ */
+    /*----- 4️⃣ Reset when cursor leaves -----*/
     card.addEventListener('mouseleave', () => {
-      targetX = targetY = 0;
+      targetX = 0;
+      targetY = 0;
     });
 
-    /* -------------------------------------------------------------
-     * 4️⃣  Animation loop – smooth spring‑like motion
-     * ------------------------------------------------------------ */
+    /*----- 5️⃣ Animation loop -----*/
     function animate() {
       currentX += (targetX - currentX) * damping;
       currentY += (targetY - currentY) * damping;
-
       card.style.transform = `translate(${currentX}px, ${currentY}px)`;
       requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);   // start animation
+    requestAnimationFrame(animate);
   </script>
 </body>
 </html>
