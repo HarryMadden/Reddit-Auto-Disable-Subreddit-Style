@@ -65,9 +65,9 @@
      * 1️⃣  Variables
      * ------------------------------------------------------------ */
     const card = document.getElementById('card');
-    const maxTranslate = 200;          // max pixels the card may move
+    const maxTranslate = 100;          // max pixels the card may move
     const smoothingPoints = 4;        // how many recent cursor points to average
-    const damping = 0.04;             // higher = faster, lower = smoother
+    const damping = 0.03;             // higher = faster, lower = smoother
 
     let mouseHistory = [];            // stores recent normalized offsets
     let targetX = 0, targetY = 0;     // smoothed target position
