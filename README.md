@@ -1,7 +1,7 @@
 <p align="center">
   <br>
   <img
-    src="https://github.com/user-attachments/assets/50698b2d-50eb-48d4-b7a6-6927ebf00a99"
+    src="https://raw.githubusercontent.com/HarryMadden/Reddit-Auto-Disable-Subreddit-Style/refs/heads/main/no-subreddit-style/icons/RedditCross.png"
     width="128"
     height="128"
     alt="ExtIcon"
