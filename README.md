@@ -2,14 +2,17 @@
   <br>
   <img
     src="https://raw.githubusercontent.com/HarryMadden/Reddit-Auto-Disable-Subreddit-Style/refs/heads/main/no-subreddit-style/icons/RedditCross.png"
-    width="128"
+    width="256"
     height="128"
     alt="ExtIcon"
   >
 </p>
 
 <p align="center">
-  Chrome Extension for Automatically Disabling Subreddit Styles – RES does not have this functionality without logging in.
+  Chrome Extension for Automatically Disabling Subreddit Styles.
+</p>
+<p align="center">
+  RES does not have this functionality without logging in.
 </p>
 
 <p align="center">
