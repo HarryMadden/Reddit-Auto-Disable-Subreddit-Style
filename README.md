@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  This extension is now <b>deprecated</b> due to Reddit <a href="https://old.reddit.com/r/modnews/comments/1ujtebf/logging_in_to_use_old_reddit/">requiring signing in</a> to access old.reddit.com
+</p>
+
+<p align="center">
   Chrome Extension for Automatically Disabling Subreddit Styles.
 </p>
 <p align="center">
